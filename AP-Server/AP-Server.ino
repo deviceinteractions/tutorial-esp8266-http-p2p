@@ -41,6 +41,7 @@ void handleMessage(){
   
   // Check for valid request with a message (in the expected format)
   if(server.hasArg("body")){
+    digitalWrite(D5, HIGH);
     Serial.println("Message received from Client:");
     msgBody = server.arg("body");
     Serial.println(msgBody);
@@ -48,6 +49,8 @@ void handleMessage(){
     // Generate and send back an acknowledgement response
     msgBody = "Hi, this is the Server. I got your message saying : " + msgBody;
     server.send ( 200, "text/plain", msgBody);
+    delay(500)
+    digitalWrite(D5, LOW);
   }
   // handle messages with invalid bodies
   else {
@@ -64,7 +67,9 @@ void handleNotFound() {
 }
 
 void setup() {
-  delay(1000);
+
+  pinMode(D4, OUTPUT);
+  pinMode(D5, OUTPUT);
   Serial.begin(9600);
   Serial.println();
   Serial.println("Configuring access point...");
@@ -77,7 +82,7 @@ void setup() {
   
   // Start the Access Point
   WiFi.softAP(ssid, password);
-
+  digitalWrite(D4, LOW);
   // Serial messages with Access Point details
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");

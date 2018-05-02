@@ -39,6 +39,8 @@ String url = "";
 String body = "";
 
 void setup() {
+    pinMode(D4, OUTPUT);
+    pinMode(D5, OUTPUT);
     Serial.begin(9600); // Init Serial comms
 
     // Clear the Serial buffer
@@ -50,6 +52,7 @@ void setup() {
     
     // WiFi connection
     while (WiFi.status() != WL_CONNECTED) {
+      digitalWrite(D4, LOW);
       delay(500);
       Serial.print(".");
     }
@@ -60,12 +63,17 @@ void setup() {
     Serial.println(WiFi.localIP());
     Serial.println();
     Serial.println("Ready to send a message. Type into the Serial Monitor Bar and hit Send");
-
+    digitalWrite(D4, HIGH);
 }
 
 void loop() {
     // Auto reconnect on loss of WiFi connection
     if(WiFi.status() != WL_CONNECTED){
+      while (WiFi.status() != WL_CONNECTED) {
+        digitalWrite(D4, LOW);
+        delay(500);
+        Serial.print(".");
+      }
       Serial.println("");
       Serial.print("Connected to ");
       Serial.println(WIFI_SSID);
@@ -73,6 +81,7 @@ void loop() {
       Serial.println(WiFi.localIP());
       Serial.println();
       Serial.println("Ready to send a message. Type into the Serial Monitor Bar and hit Send");      
+      digitalWrite(D4, HIGH);
     }
 
     // wait for Serial input from the User
@@ -98,6 +107,7 @@ void loop() {
           if(httpCode > 0) {
               // Receive the Server response
               if(httpCode == HTTP_CODE_OK) {
+                  digitalWrite(D5, HIGH);
                   Serial.print("Received Response\n");
                   String payload = http.getString();
                   Serial.println(payload);
@@ -111,6 +121,8 @@ void loop() {
       }
     } 
    
-    delay(2000);
+    delay(500);
+    digitalWrite(D5, LOW);
+    delay(1500);
 }
 
