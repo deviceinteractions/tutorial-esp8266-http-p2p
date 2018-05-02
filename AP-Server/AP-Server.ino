@@ -29,8 +29,8 @@ String msgBody = "";
 
 ESP8266WebServer server(80);        // Use the default port 80 for HTTP comms
 
+// handle requests at the root endpoint (http://xxx.xxx.xxx.xxx/)
 void handleRoot() {
-
   Serial.println("Root page accessed by a client!");
 
 // Respond with a mini HTML page
@@ -39,13 +39,17 @@ void handleRoot() {
 
 void handleMessage(){
   
+  // Check for valid request with a message (in the expected format)
   if(server.hasArg("body")){
     Serial.println("Message received from Client:");
     msgBody = server.arg("body");
     Serial.println(msgBody);
+
+    // Generate and send back an acknowledgement response
     msgBody = "Hi, this is the Server. I got your message saying : " + msgBody;
     server.send ( 200, "text/plain", msgBody);
   }
+  // handle messages with invalid bodies
   else {
     Serial.println("Invalid message received");
     server.send ( 200, "text/plain", "Recevied a message without a body!");
@@ -54,6 +58,7 @@ void handleMessage(){
   Serial.println("-------------------------------------");
 }
 
+// handle invalid requests
 void handleNotFound() {
   server.send ( 404, "text/plain", "404, No resource found");
 }
@@ -66,11 +71,14 @@ void setup() {
 
   //setup the custom IP address
   WiFi.mode(WIFI_AP_STA);
+
+  // COnfigure the Access Point
   WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));   // subnet FF FF FF 00  
   
-  /* You can remove the password parameter if you want the AP to be open. */
+  // Start the Access Point
   WiFi.softAP(ssid, password);
 
+  // Serial messages with Access Point details
   IPAddress myIP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
   Serial.println(myIP);
@@ -84,5 +92,6 @@ void setup() {
 }
 
 void loop() {
+	// Constantly listen for Client requests
   server.handleClient();
 }
