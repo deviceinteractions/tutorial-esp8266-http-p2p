@@ -30,4 +30,9 @@ To set up the Client Module, follow these steps:
 8. Now you can type in any message that you like in the Serial monitor bar, and that message will be sent to the Server over the Hotspot
 9. You will also receive an acknowledgement message back from the Server regarding your message
 
+### Breadboard connection
+The LED functionalities are implemented on the pins D4 and D5 of both NodeMCUs.
+LED at D4 is internally connected on the NodeMCU.
+LED at D5 needs to be connected via a 330 Ohm resistor. Refer to the connection diagram image in the Repo.
+
 ### Try connecting the two modules on two separate PCs, with the two Serial Monitors open. You will see all the magic happening!
